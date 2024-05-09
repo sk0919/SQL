@@ -88,6 +88,9 @@ WHERE e1.salary > (SELECT e2.salary FROM employee e2 WHERE e1.manager_id = e2.em
       ORDER BY salary DESC
       LIMIT 1, 1
   );
+
+  -- or another appraoch 
+  SELECT * FROM (SELECT DISTINCT salary FROM employee ORDER BY salary DESC LIMIT 2 ) AS result ORDER BY salary LIMIT 1;
   ```
 
 ### Q. To select the employees with the nth highest salary, you can replace `n` with the desired rank: ###
