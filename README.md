@@ -122,3 +122,80 @@ WHERE e1.salary > (SELECT e2.salary FROM employee e2 WHERE e1.manager_id = e2.em
 
 In these queries, replace `n` with the rank of the salary you're interested in. For example, for the third highest salary, replace `n` with `3`.
 
+
+## Q. Delete the duplicate rows without using inbuilt functions ##
+Yes, you can delete duplicate rows in PostgreSQL (pgSQL) and MySQL without using inbuilt functions. However, it's important to note that this process involves creating a new table, copying distinct rows into it, and then renaming it to the original table name. Here's how you can do it:
+
+1. PostgreSQL (pgSQL):
+
+```sql
+-- Create a new table and copy distinct rows into it
+CREATE TABLE employee_temp AS
+SELECT DISTINCT * FROM employee;
+
+-- Drop the original table
+DROP TABLE employee;
+
+-- Rename the new table to the original table name
+ALTER TABLE employee_temp RENAME TO employee;
+```
+
+2. MySQL:
+
+```sql
+-- Create a new table and copy distinct rows into it
+CREATE TABLE employee_temp AS
+SELECT DISTINCT * FROM employee;
+
+-- Drop the original table
+DROP TABLE employee;
+
+-- Rename the new table to the original table name
+RENAME TABLE employee_temp TO employee;
+```
+
+
+In these queries, replace `employee` with your actual table name. Please note that this method will remove all duplicate rows, not just extra occurrences. Also, be aware that this will permanently delete the original table, so make sure to backup any important data before proceeding.
+
+# #
+
+## Q. Delete the duplicate rows without using inbuilt functions (ALTERNATIVES) ##
+Yes, there is an alternative way to delete duplicate rows without using inbuilt functions or creating a new table. However, it requires adding an additional unique ID column to your table. Here's how you can do it:
+
+1. PostgreSQL (pgSQL):
+
+```sql
+-- Add a unique ID column
+ALTER TABLE employee ADD COLUMN id SERIAL PRIMARY KEY;
+
+-- Delete duplicate rows
+DELETE FROM employee
+WHERE id NOT IN (
+    SELECT MIN(id)
+    FROM employee
+    GROUP BY emp_id, emp_name, salary, manager_id
+);
+
+-- Remove the unique ID column
+ALTER TABLE employee DROP COLUMN id;
+```
+
+2. MySQL:
+
+```sql
+-- Add a unique ID column
+ALTER TABLE employee ADD COLUMN id INT AUTO_INCREMENT PRIMARY KEY;
+
+-- Delete duplicate rows
+DELETE e1 FROM employee e1
+INNER JOIN employee e2 
+WHERE e1.id > e2.id AND e1.emp_id = e2.emp_id AND e1.emp_name = e2.emp_name AND e1.salary = e2.salary AND e1.manager_id = e2.manager_id;
+
+-- Remove the unique ID column
+ALTER TABLE employee DROP COLUMN id;
+```
+
+In these queries, replace `employee` with your actual table name. Please note that this method will remove all duplicate rows, not just extra occurrences. Also, be aware that this will permanently delete the original table, so make sure to backup any important data before proceeding.
+
+
+
