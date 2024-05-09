@@ -45,6 +45,7 @@ However, the actual performance can depend on various factors such as the databa
 
 Remember, the key to writing efficient SQL queries is understanding your data and how your database handles queries. Always try to minimize the amount of data that your query needs to process. Use joins where appropriate, limit the use of subqueries, and take advantage of indexes. And most importantly, measure and monitor the performance of your queries.
 
+- MySQL:
 ```sql
 -- Query to find employees with a salary higher than their manager's salary
 SELECT e1.emp_name AS employee_name,  
